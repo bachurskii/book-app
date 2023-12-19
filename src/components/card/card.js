@@ -51,8 +51,8 @@ export class Card extends DivComponent {
             }">
                 ${
                   existFavorites
-                    ? '<img src="/static/favorites.svg" />'
-                    : '<img src="/static/favorite-white.svg"/>'
+                    ? '<img src="/src/static/favorites.svg" />'
+                    : '<img src="/src/static/favorite-white.svg"/>'
                 } 
             </button>
         </div>

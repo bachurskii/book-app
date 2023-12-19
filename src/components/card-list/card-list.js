@@ -10,7 +10,7 @@ export class CardList extends DivComponent {
 
   render() {
     if (this.parrentState.loading) {
-      this.el.innerHTML = `<div class="card_list_loader"><img src="/static/Animation - 1702920532307.gif" alt="Loading..."/></div>`;
+      this.el.innerHTML = `<div class="card_list_loader"><img src="/src/static/Animation - 1702920532307.gif" alt="Loading..."/></div>`;
       return this.el;
     }
     const cardGrid = document.createElement("div");

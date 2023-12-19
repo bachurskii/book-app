@@ -10,15 +10,15 @@ export class Header extends DivComponent {
     this.el.classList.add("header");
     this.el.innerHTML = `
       <div>
-        <img src = '/static/logo.svg' alt = "Logo" />
+        <img src = '/src/static/logo.svg' alt = "Logo" />
       </div>
       <div class="menu">
         <a class="menu__item" href="#">
-          <img src = '/static/search.svg' alt = "Search icon"/>
+          <img src = '/src/static/search.svg' alt = "Search icon"/>
           Search book
         </a>
         <a class="menu__item" href="#favorites">
-          <img src = "/static/favorites.svg" alt = "Favorites icon" />
+          <img src = "/src/static/favorites.svg" alt = "Favorites icon" />
           Favorites
           <div class ="menu__counter">
             ${this.appState.favorites.length}

@@ -1082,15 +1082,15 @@
       this.el.classList.add("header");
       this.el.innerHTML = `
       <div>
-        <img src = '/static/logo.svg' alt = "Logo" />
+        <img src = '/src/static/logo.svg' alt = "Logo" />
       </div>
       <div class="menu">
         <a class="menu__item" href="#">
-          <img src = '/static/search.svg' alt = "Search icon"/>
+          <img src = '/src/static/search.svg' alt = "Search icon"/>
           Search book
         </a>
         <a class="menu__item" href="#favorites">
-          <img src = "/static/favorites.svg" alt = "Favorites icon" />
+          <img src = "/src/static/favorites.svg" alt = "Favorites icon" />
           Favorites
           <div class ="menu__counter">
             ${this.appState.favorites.length}
@@ -1154,8 +1154,8 @@
             }">
                 ${
                   existFavorites
-                    ? '<img src="/static/favorites.svg" />'
-                    : '<img src="/static/favorite-white.svg"/>'
+                    ? '<img src="/src/static/favorites.svg" />'
+                    : '<img src="/src/static/favorite-white.svg"/>'
                 } 
             </button>
         </div>
@@ -1183,7 +1183,7 @@
 
     render() {
       if (this.parrentState.loading) {
-        this.el.innerHTML = `<div class="card_list_loader"><img src="/static/Animation - 1702920532307.gif" alt="Loading..."/></div>`;
+        this.el.innerHTML = `<div class="card_list_loader"><img src="/src/static/Animation - 1702920532307.gif" alt="Loading..."/></div>`;
         return this.el;
       }
       const cardGrid = document.createElement("div");
@@ -1248,10 +1248,10 @@
    <input type="text" placeholder="Find a book or author..." class="search__input" value="${
      this.state.searchQuerry ? this.state.searchQuerry : ""
    }" />
-   <img src="/static/search.svg" alt="icon search"/>
+   <img src="/src/static/search.svg" alt="icon search"/>
    </div>
    <button  aria-label="find">
-   <img src="/static/search-white.svg" alt="icon search"/>
+   <img src="/src/static/search-white.svg" alt="icon search"/>
    </button>
     `;
       this.el

@@ -18,10 +18,10 @@ export class Search extends DivComponent {
    <input type="text" placeholder="Find a book or author..." class="search__input" value="${
      this.state.searchQuerry ? this.state.searchQuerry : ""
    }" />
-   <img src="/static/search.svg" alt="icon search"/>
+   <img src="/src/static/search.svg" alt="icon search"/>
    </div>
    <button  aria-label="find">
-   <img src="/static/search-white.svg" alt="icon search"/>
+   <img src="/src/static/search-white.svg" alt="icon search"/>
    </button>
     `;
     this.el
