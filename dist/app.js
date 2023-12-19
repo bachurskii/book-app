@@ -1081,60 +1081,24 @@
     render() {
       this.el.classList.add("header");
       this.el.innerHTML = `
-    <div>
-    <img src = '/static/logo.svg' alt = "Logo" />
-    </div>
-    <div class="menu">
-    <a class="menu__item" href="#">
-     <img src = '/static/search.svg' alt = "Search icon"/>
-     Search book
-    </a>
-    <a class="menu__item href="#favorites">
-    <img src = "/static/favorites.svg" alt = "Favorites icon" />
-    Favorites
-    <div class ="menu__counter">
-    ${this.appState.favorites.length}
-    </div>
-    </a>
-    </div>
-    
+      <div>
+        <img src = '/static/logo.svg' alt = "Logo" />
+      </div>
+      <div class="menu">
+        <a class="menu__item" href="#">
+          <img src = '/static/search.svg' alt = "Search icon"/>
+          Search book
+        </a>
+        <a class="menu__item" href="#favorites">
+          <img src = "/static/favorites.svg" alt = "Favorites icon" />
+          Favorites
+          <div class ="menu__counter">
+            ${this.appState.favorites.length}
+          </div>
+        </a>
+      </div>
     `;
-      return this.el;
-    }
-  }
 
-  class Search extends DivComponent {
-    constructor(state) {
-      super();
-      this.state = state;
-    }
-
-    search() {
-      const value = this.el.querySelector("input").value;
-      this.state.searchQuerry = value;
-    }
-
-    render() {
-      this.el.classList.add("search");
-      this.el.innerHTML = `
-   <div class="search__wrapper">
-   <input type="text" placeholder="Find a book or author..." class="search__input" value="${
-     this.state.searchQuerry ? this.state.searchQuerry : ""
-   }" />
-   <img src="/static/search.svg" alt="icon search"/>
-   </div>
-   <button  aria-label="find">
-   <img src="/static/search-white.svg" alt="icon search"/>
-   </button>
-    `;
-      this.el
-        .querySelector("button")
-        .addEventListener("click", this.search.bind(this));
-      this.el.querySelector("input").addEventListener("keydown", (event) => {
-        if (event.code === "Enter") {
-          this.search();
-        }
-      });
       return this.el;
     }
   }
@@ -1144,6 +1108,15 @@
       super();
       this.appState = appState;
       this.cardState = cardState;
+    }
+
+    #addToFavorites() {
+      this.appState.favorites.push(this.cardState);
+    }
+    #deleteFromFavorites() {
+      this.appState.favorites = this.appState.favorites.filter(
+        (b) => b.key !== this.cardState.key
+      );
     }
 
     render() {
@@ -1188,7 +1161,15 @@
         </div>
     </div>
 `;
-
+      if (existFavorites) {
+        this.el
+          .querySelector("button")
+          .addEventListener("click", this.#deleteFromFavorites.bind(this));
+      } else {
+        this.el
+          .querySelector("button")
+          .addEventListener("click", this.#addToFavorites.bind(this));
+      }
       return this.el;
     }
   }
@@ -1205,12 +1186,82 @@
         this.el.innerHTML = `<div class="card_list_loader"><img src="/static/Animation - 1702920532307.gif" alt="Loading..."/></div>`;
         return this.el;
       }
-      this.el.classList.add("card_list");
-      this.el.innerHTML = `<h1>Find books - ${this.parrentState.numFound}</h1
-    `;
+      const cardGrid = document.createElement("div");
+      cardGrid.classList.add("card_grid");
+      this.el.append(cardGrid);
       for (const card of this.parrentState.list) {
-        this.el.append(new Card(this.appState, card).render());
+        cardGrid.append(new Card(this.appState, card).render());
       }
+      return this.el;
+    }
+  }
+
+  class FavoritesView extends AbstractView {
+    constructor(appState) {
+      super();
+      this.appState = appState;
+      this.appState = onChange$1(this.appState, this.appStateHook.bind(this));
+      this.setTitle("My books");
+    }
+    destroy() {
+      onChange$1.unsubscribe(this.appState);
+    }
+    appStateHook(path) {
+      if (path === "favorites") {
+        this.render();
+      }
+    }
+
+    render() {
+      const main = document.createElement("div");
+      main.innerHTML = `<h1>Favorites</h1
+    `;
+      main.append(
+        new CardList(this.appState, { list: this.appState.favorites }).render()
+      );
+      this.app.innerHTML = "";
+      this.app.append(main);
+      this.renderHear();
+    }
+
+    renderHear() {
+      const header = new Header(this.appState).render();
+      this.app.prepend(header);
+    }
+  }
+
+  class Search extends DivComponent {
+    constructor(state) {
+      super();
+      this.state = state;
+    }
+
+    search() {
+      const value = this.el.querySelector("input").value;
+      this.state.searchQuerry = value;
+    }
+
+    render() {
+      this.el.classList.add("search");
+      this.el.innerHTML = `
+   <div class="search__wrapper">
+   <input type="text" placeholder="Find a book or author..." class="search__input" value="${
+     this.state.searchQuerry ? this.state.searchQuerry : ""
+   }" />
+   <img src="/static/search.svg" alt="icon search"/>
+   </div>
+   <button  aria-label="find">
+   <img src="/static/search-white.svg" alt="icon search"/>
+   </button>
+    `;
+      this.el
+        .querySelector("button")
+        .addEventListener("click", this.search.bind(this));
+      this.el.querySelector("input").addEventListener("keydown", (event) => {
+        if (event.code === "Enter") {
+          this.search();
+        }
+      });
       return this.el;
     }
   }
@@ -1230,9 +1281,13 @@
       this.state = onChange$1(this.state, this.stateHook.bind(this));
       this.setTitle("Search books");
     }
+    destroy() {
+      onChange$1.unsubscribe(this.appState);
+      onChange$1.unsubscribe(this.state);
+    }
     appStateHook(path) {
       if (path === "favorites") {
-        console.log(path);
+        this.render();
       }
     }
 
@@ -1244,7 +1299,6 @@
           this.state.offset
         );
         this.state.loading = false;
-        console.log(data);
         this.state.numFound = data.numFound;
         this.state.list = data.docs;
       }
@@ -1261,27 +1315,33 @@
     }
     render() {
       const main = document.createElement("div");
+      main.innerHTML = `<h1>Find books - ${this.state.numFound}</h1
+    `;
       main.append(new Search(this.state).render());
       main.append(new CardList(this.appState, this.state).render());
       // main.innerHTML = `Quality of books:${this.appState.favorites.length}`;
       this.app.innerHTML = "";
       this.app.append(main);
-      this.renderHear();
+      this.renderHeader();
     }
 
-    renderHear() {
+    renderHeader() {
       const header = new Header(this.appState).render();
       this.app.prepend(header);
     }
   }
 
   class App {
-    routes = [{ path: "", view: MainView }];
+    routes = [
+      { path: "", view: MainView },
+      { path: "#favorites", view: FavoritesView },
+    ];
+
     appState = {
       favorites: [],
     };
     constructor() {
-      window.addEventListener("hashchange", this.route.bind(this));
+      window.addEventListener("hashchange", () => this.route());
       this.route();
     }
 
